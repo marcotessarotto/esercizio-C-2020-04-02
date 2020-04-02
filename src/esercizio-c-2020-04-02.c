@@ -139,7 +139,7 @@ int main (int argc, char * argv[]) {
 	}
 
 	free(char_array);
-	printf("Sono stati generati %ui processi figli!",child_process_number);
+	printf("Sono stati generati %d processi figli!",child_process_number);
 
 	return 0;
 
