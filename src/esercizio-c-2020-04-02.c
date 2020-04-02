@@ -34,16 +34,16 @@ void reset_array(char * array) {
 	array = memset(array,0,NUM_CHARS*sizeof(char));
 }
 
-char find_min (char * array){
+char find_min (char * array) {
 	char min = array[0];
 	for(int i=1; i<NUM_CHARS; i++){
 		if(array[i] < min)
-			min=array[i];
+			min = array[i];
 	}
 	return min;
 }
 
-char find_max (char * array){
+char find_max (char * array) {
 	char max = array[0];
 	for(int i=1; i<NUM_CHARS; i++){
 		if(array[i] > max){
@@ -57,7 +57,7 @@ char find_more (char * array){
 	int more_counter = 0;
 	char more = array[0];
 	for(int i=0; i<NUM_CHARS; i++){
-		int counter=0;
+		int counter = 0;
 		for(int j=0; j<NUM_CHARS; j++){
 			if(array[i]==array[j])
 				counter++;
@@ -104,7 +104,7 @@ int main (int argc, char * argv[]) {
 	while((input = getchar())!=EOF){
 		char_array[i]=input;
 		i++;
-		if(i==NUM_CHARS){
+		if(i == NUM_CHARS){
 			switch(fork()) {
 				case 0:
 					printf("\n");
