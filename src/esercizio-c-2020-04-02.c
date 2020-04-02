@@ -4,7 +4,6 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <string.h>
-#include <limits.h>
 
 #define NUM_CHARS 80
 #define ASCII_SIZE 256
