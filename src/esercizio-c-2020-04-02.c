@@ -28,7 +28,7 @@ fatta l'analisi e scritto i risultati , il processo figlio termina.
 #include <limits.h>
 #include <stdlib.h>
 
-#define NUM_CHARS 5
+#define NUM_CHARS 80
 
 char min_char(char * char_array);
 char max_char(char * char_array);
