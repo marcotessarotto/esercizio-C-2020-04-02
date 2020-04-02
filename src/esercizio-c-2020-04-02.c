@@ -111,8 +111,8 @@ int main(int argc, char** argv)
 
 	while((c_from_stdin = getchar()) != EOF)
 	{
-		// Elimino il carattere 'line feed' per un puro fattore estetico
-		if(c_from_stdin == 10) continue;
+		// Posso eliminare il carattere 'line feed' per un puro fattore estetico
+		// if(c_from_stdin == 10) continue;
 
 		char_array[chars_letti_da_stdin++] = c_from_stdin;
 
