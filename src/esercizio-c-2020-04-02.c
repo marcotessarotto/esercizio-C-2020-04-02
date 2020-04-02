@@ -40,6 +40,7 @@ int main(int argc, char **argv) {
 		// Spawn worker process
 		if (char_array_size == NUM_CHARS || (last_char == EOF && char_array_size > 0)) {
 			spawn_worker(char_array, char_array_size);
+			p_count++;
 			char_array_size = 0;
 		}
 
@@ -54,7 +55,7 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	printf("Executed %d", p_count);
+	printf("Created %d children", p_count);
 	return 0;
 }
 
