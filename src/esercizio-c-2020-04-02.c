@@ -5,15 +5,18 @@
 #include <sys/wait.h>
 #include <string.h>
 
-#define NUM_CHARS 80
+#define NUM_CHARS 10
 
+void print_input (unsigned char * array, unsigned int dim);
+void process_input (unsigned char * array, unsigned int dim);
+void print_result (unsigned char min_char, unsigned char max_char, unsigned char most_frequent, unsigned char less_frequent);
 unsigned char min_char (unsigned char * array, unsigned int dim);
 unsigned char max_char (unsigned char * array, unsigned int dim);
 unsigned char most_frequent_char (unsigned char * array, unsigned int dim);
 unsigned char less_frequent_char (unsigned char * array, unsigned int dim);
-unsigned char only_unrepeated_char (unsigned char * array, unsigned int dim);
+unsigned char * only_unrepeated_char (unsigned char * array, unsigned int dim);
 unsigned int is_unrepeated (unsigned char src, unsigned char * dest, unsigned int dim);
-
+unsigned char * make_copy_of_array(unsigned char * src_array, unsigned int dim);
 
 /*
 	il programma svolge le attività sotto descritte fino a quando incontra EOF su stdin.
@@ -42,7 +45,8 @@ unsigned int is_unrepeated (unsigned char src, unsigned char * dest, unsigned in
 int main(int argc, char *argv[]) {
 
 	int c;
-	unsigned long char_counter = 0;
+	unsigned int child_process_counter = 0;
+	unsigned int char_counter = 0;
 	unsigned char * char_array;
 
 	char_array = calloc(NUM_CHARS, sizeof(unsigned char));
@@ -52,53 +56,100 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
+	printf("Insert text here: ");
+
 	while ((c = getchar()) != EOF) {
-		char_counter++;
 
-		switch (fork()) {
-			case 0:
-				printf("sono il processo figlio\n");
+		if (char_counter == NUM_CHARS) {
+			switch (fork()) {
+				case 0:
+					printf("\n*** [child %d] operation:\n", child_process_counter);
+					process_input(char_array, NUM_CHARS);
+					free(char_array);
+					exit(0);
+					break;
 
-				exit(0);
-				break;
-			case -1:
-				printf("fork() ha fallito! niente processo figlio!\n");
+				case -1:
+					printf("fork() ha fallito!\n");
+					exit(1);
+					break;
 
-				exit(1);
-				break;
-			default: // valore > 0, ovvero il pid del processo figlio
+				default:
+					child_process_counter++;
+					printf("processo padre\n");
+					wait(NULL);
 
-				printf("sono il processo padre\n");
 
-				exit(0);
+					memset(char_array, 0, NUM_CHARS*sizeof(unsigned char));
+					char_counter = 0;
+					break;
+			}
+		} else if (c > 31 && c < 127) {
+			char_array[char_counter] = c;
+			char_counter++;
 		}
-
 	}
 
+	printf("\n*** Number of child process launched: %d\n", child_process_counter);
+
+	free(char_array);
+
+	exit(0);
+}
+
+void print_input (unsigned char * array, unsigned int dim) {
+	printf("*** Input: ");
+
+	for (int i = 0; i < dim; i++) {
+		if ((unsigned int) array[i] != 0)
+			printf("%c", array[i]);
+	}
+
+	printf("\n");
+}
+
+void process_input (unsigned char * array, unsigned int dim) {
+	unsigned char min, max, most, less;
+
+	print_input(array, dim);
+
+	min = min_char(array, dim);
+	max = max_char(array, dim);
+	//most = most_frequent_char(array, dim);
+	//less = less_frequent_char(array, dim);
+
+	print_result(min, max, most, less);
+}
+
+void print_result (unsigned char min_char, unsigned char max_char, unsigned char most_frequent, unsigned char less_frequent) {
+	printf ("*** Minimun char: %d (%c)\n", min_char, min_char);
+	printf ("*** Maximum char: %d (%c)\n", max_char, max_char);
+	//printf ("*** Most frequent char: %c\n", most_frequent);
+	//printf ("*** Less frequent char: %c\n", less_frequent);
 }
 
 unsigned char min_char (unsigned char * array, unsigned int dim) {
-	unsigned int min;
-	min  = (unsigned int) array[0];
+	unsigned char min;
+	min  =  array[0];
 
 	for (int i = 1; i < dim; i++) {
-		if ((unsigned int) array[i] < min)
-			min = (unsigned int) array[i];
+		if (array[i] < min)
+			min = array[i];
 	}
 
-	return (unsigned char) min;
+	return min;
 }
 
 unsigned char max_char (unsigned char * array, unsigned int dim) {
-	unsigned int max;
-	max  = (unsigned int) array[0];
+	unsigned char max;
+	max  =  array[0];
 
 	for (int i = 1; i < dim; i++) {
-		if ((unsigned int) array[i] > max)
-			max = (unsigned int) array[i];
+		if (array[i] > max)
+			max = array[i];
 	}
 
-	return (unsigned char) max;
+	return max;
 }
 
 unsigned char most_frequent_char (unsigned char * array, unsigned int dim) {
@@ -167,7 +218,7 @@ unsigned char less_frequent_char (unsigned char * array, unsigned int dim) {
 	return unrepeated_char[less_frequent];
 }
 
-unsigned char only_unrepeated_char (unsigned char * array, unsigned int dim) {
+unsigned char * only_unrepeated_char (unsigned char * array, unsigned int dim) {
 	unsigned char * unrepeated_char;
 	unsigned int size = 1;
 	unsigned int index = 0;
@@ -201,11 +252,30 @@ unsigned char only_unrepeated_char (unsigned char * array, unsigned int dim) {
 
 unsigned int is_unrepeated (unsigned char src, unsigned char * dest, unsigned int dim) {
 	for (int i = 0; i < dim; i++) {
-		if (src == dest[i])
+		if ((src == dest[i]) && ((unsigned int) src != 0))
 			return 0;
 	}
 
 	return 1;
+}
+
+unsigned char * make_copy_of_array(unsigned char * src_array, unsigned int dim) {
+
+	if (src_array == NULL)
+		return NULL;
+
+	unsigned char * result;
+
+	result = calloc(dim, sizeof(unsigned char));
+
+	if (result == NULL) {
+		perror("calloc error!");
+		exit(EXIT_FAILURE);
+	}
+
+	memcpy(result, src_array, dim*sizeof(unsigned char));
+
+	return result;
 }
 
 
