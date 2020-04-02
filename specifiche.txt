@@ -1,0 +1,21 @@
+il programma svolge le attività sotto descritte fino a quando incontra EOF su stdin.
+
+1: il programma legge caratteri da stdin. 
+Quando incontra EOF, il programma scrive quanti processi figli ha lanciato in tutto e poi termina.
+
+Il programma accumula i caratteri letti da stdin in un array di dimensione 80 chiamato char_array.
+(introdurre nel codice un #define NUM_CHARS 80).
+
+Quando char_array è pieno, passa tutto l'array ad un nuovo processo figlio 
+che fa delle analisi che scrive su stdout (analisi sotto riportate).
+
+Dopo aver lanciato il processo figlio, il processo principale azzera char_array ed il programma continua da 1:
+
+
+*analisi svolte dai processi figlio (sull'array di 80 caratteri ricevuto)*
+carattere minimo
+carattere massimo
+carattere con più occorrenze
+carattere con meno occorrenze
+
+fatta l'analisi e scritto i risultati , il processo figlio termina.
