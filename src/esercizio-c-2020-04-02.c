@@ -124,7 +124,8 @@ int main (int argc, char * argv[]) {
 				case -1:
 					printf("fork() ha fallito! niente processo figlio!\n");
 
-					exit(1);
+					exit(1)
+					break;
 				default:
 					printf("\nSono il processo padre\n");
 					child_process_number++;
