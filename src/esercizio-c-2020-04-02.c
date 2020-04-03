@@ -59,10 +59,10 @@ int main(int argc, char** argv) {
                     break;
             }
         }else{
-					if(c > 31 && c < 127){
-            char_array[i] = c;
-						i++;
-					}
+			if(c > 31 && c < 127){
+				char_array[i] = c;
+				i++;
+			}
         }
     }
     printf("Sono stati lanciati %d processi figli", child_counter);
