@@ -14,8 +14,8 @@ unsigned char min_char (unsigned char * array, unsigned int dim);
 unsigned char max_char (unsigned char * array, unsigned int dim);
 unsigned char most_frequent_char (unsigned char * array, unsigned int dim);
 unsigned char less_frequent_char (unsigned char * array, unsigned int dim);
-unsigned char * only_unrepeated_char (unsigned char * array, unsigned int dim);
-unsigned int is_unrepeated (unsigned char src, unsigned char * dest, unsigned int dim);
+void bubble_sort(unsigned char * array, unsigned int array_dimension);
+void swap_uchar(unsigned char *x, unsigned char *y);
 
 /*
 	il programma svolge le attività sotto descritte fino a quando incontra EOF su stdin.
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 			switch (fork()) {
 				case 0:
 					printf("\n****************************************\n");
-					printf("\t [child %d] operation:\n", child_process_counter);
+					printf("\t [child %d] operation on input: '", child_process_counter);
 					process_input(char_array, NUM_CHARS);
 					printf("\n****************************************\n");
 					free(char_array);
@@ -79,31 +79,29 @@ int main(int argc, char *argv[]) {
 					wait(NULL);
 					memset(char_array, 0, NUM_CHARS*sizeof(unsigned char));
 					char_counter = 0;
+					char_array[char_counter++] = c;
 					break;
 			}
-		} else if (c > 31 && c < 127) {
-			char_array[char_counter] = c;
-			char_counter++;
+		} else if (c > 31) {
+			char_array[char_counter++] = c;
 		}
 
 	}
 	printf("\n****************************************\n");
-	printf("\t Number of child process launched: %d\n", child_process_counter);
-
+	printf("\t [parent] Terminated:\n");
+	printf("\t Number of child process launched: %d", child_process_counter);
+	printf("\n****************************************\n");
 	free(char_array);
 
 	exit(0);
 }
 
 void print_input (unsigned char * array, unsigned int dim) {
-	printf("\t Input: ");
 
-	for (int i = 0; i < dim; i++) {
-		if ((unsigned int) array[i] != 0)
-			printf("%c", array[i]);
-	}
+	for (int i = 0; i < dim; i++)
+		printf("%c", array[i]);
 
-	printf("\n");
+	printf("'\n");
 }
 
 void process_input (unsigned char * array, unsigned int dim) {
@@ -122,137 +120,101 @@ void process_input (unsigned char * array, unsigned int dim) {
 void print_result (unsigned char min_char, unsigned char max_char, unsigned char most_frequent, unsigned char less_frequent) {
 	printf ("\t Minimun char: %d (%c)\n", min_char, min_char);
 	printf ("\t Maximum char: %d (%c)\n", max_char, max_char);
-	printf ("\t Most frequent char: %c\n", most_frequent);
-	printf ("\t Less frequent char: %c\n", less_frequent);
+	printf ("\t Most frequent char: %c (%d)\n", most_frequent, most_frequent);
+	printf ("\t Less frequent char: %c (%d)\n", less_frequent, less_frequent);
 }
 
 unsigned char min_char (unsigned char * array, unsigned int dim) {
 	unsigned char min;
 	min  =  array[0];
-
 	for (int i = 1; i < dim; i++) {
 		if (array[i] < min)
 			min = array[i];
 	}
-
 	return min;
 }
 
 unsigned char max_char (unsigned char * array, unsigned int dim) {
 	unsigned char max;
 	max  =  array[0];
-
 	for (int i = 1; i < dim; i++) {
 		if (array[i] > max)
 			max = array[i];
 	}
-
 	return max;
 }
 
 unsigned char most_frequent_char (unsigned char * array, unsigned int dim) {
-	unsigned char * unrepeated_char;
-	unsigned int * occurrences;
-	unsigned int size;
-	unsigned int most_frequent;
+	bubble_sort(array, dim);
 
-	unrepeated_char = only_unrepeated_char(array, dim);
-	size = sizeof(unrepeated_char) / sizeof(unsigned char);
+	unsigned int most_frequent_count = 1;
+	unsigned int curr_count = 1;
+	unsigned char result = array[0];
 
-	occurrences = calloc(size, sizeof(unsigned int));
-
-	if (occurrences == NULL) {
-		perror("calloc error!");
-		exit(EXIT_FAILURE);
-	}
-
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; i < dim; j++) {
-			if (array[j] == unrepeated_char[i])
-				occurrences[i]++;
+	for (int i = 1; i < dim; i++) {
+		if (array[i] == array[i - 1])
+			curr_count++;
+		else {
+			if (curr_count > most_frequent_count) {
+				most_frequent_count = curr_count;
+				result = array[i - 1];
+			}
+			curr_count = 1;
 		}
 	}
 
-	most_frequent = occurrences[0];
-
-	for (int i = 1; i < size; i++) {
-		if (occurrences[i] > most_frequent)
-			most_frequent = occurrences[i];
+	if (curr_count > most_frequent_count)
+	{
+		most_frequent_count = curr_count;
+		result = array[dim - 1];
 	}
 
-	return unrepeated_char[most_frequent];
+	return result;
 }
 
 unsigned char less_frequent_char (unsigned char * array, unsigned int dim) {
-	unsigned char * unrepeated_char;
-	unsigned int * occurrences;
-	unsigned int size;
-	unsigned int less_frequent;
+	bubble_sort(array, dim);
 
-	unrepeated_char = only_unrepeated_char(array, dim);
-	size = sizeof(unrepeated_char) / sizeof(unsigned char);
-
-	occurrences = calloc(size, sizeof(unsigned int));
-
-	if (occurrences == NULL) {
-		perror("calloc error!");
-		exit(EXIT_FAILURE);
-	}
-
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; i < dim; j++) {
-			if (array[j] == unrepeated_char[i])
-				occurrences[i]++;
-		}
-	}
-
-	less_frequent = occurrences[0];
-
-	for (int i = 1; i < size; i++) {
-		if (occurrences[i] < less_frequent)
-			less_frequent = occurrences[i];
-	}
-
-	return unrepeated_char[less_frequent];
-}
-
-unsigned char * only_unrepeated_char (unsigned char * array, unsigned int dim) {
-	unsigned char * unrepeated_char;
-	unsigned int size = 1;
-	unsigned int index = 0;
-	unrepeated_char = calloc(size, sizeof(unsigned char));
-
-	if (unrepeated_char == NULL) {
-		perror("calloc error!");
-		exit(EXIT_FAILURE);
-	}
-
-	unrepeated_char[index] = array[index];
+	int less_frequent_count = dim;
+	char result = array[0];
+	int curr_count = 1;
 
 	for (int i = 1; i < dim; i++) {
-		if (is_unrepeated(array[i], unrepeated_char, size)) {
-			size++;
-			index++;
-
-			unrepeated_char = realloc(unrepeated_char, size*sizeof(unsigned char));
-
-			if (unrepeated_char == NULL) {
-				perror("calloc error!");
-				exit(EXIT_FAILURE);
+		if (array[i] == array[i - 1])
+			curr_count++;
+		else {
+			if (curr_count < less_frequent_count) {
+				less_frequent_count = curr_count;
+				result = array[i - 1];
 			}
-
-			unrepeated_char[index] = array[i];
+			curr_count = 1;
 		}
 	}
 
-	return unrepeated_char;
-}
-
-unsigned int is_unrepeated (unsigned char src, unsigned char * dest, unsigned int dim) {
-	for (int i = 0; i < dim; i++) {
-		if ((src == dest[i]) && ((unsigned int) src != 0))
-			return 0;
+	if (curr_count < less_frequent_count)
+	{
+		less_frequent_count = curr_count;
+		result = array[dim - 1];
 	}
 
-	return 1;
+	return result;
 }
+
+void bubble_sort(unsigned char * array, unsigned int array_dimension) {
+	unsigned int dim = array_dimension - 1;
+
+	for (int i = 0; i < dim; i++) {
+		for (int j = 0; j < dim - i; j++) {
+			if (array[j] > array[j+1])
+				swap_uchar(&array[j], &array[j+1]);
+		}
+	}
+}
+
+void swap_uchar(unsigned char *x, unsigned char *y) {
+	unsigned char t = *x;
+	*x = *y;
+	*y = t;
+}
+
+
