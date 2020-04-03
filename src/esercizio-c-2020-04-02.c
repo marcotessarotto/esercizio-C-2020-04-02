@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NUM_CHARS 20
+#define NUM_CHARS 80
 
 void swap (char *a, char *b);
 void bubble_sort(char * array, unsigned long size);
