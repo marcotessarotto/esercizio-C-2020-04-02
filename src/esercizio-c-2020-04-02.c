@@ -60,9 +60,8 @@ int main(int argc, char **argv) {
 }
 
 /**
- * Being not specified we leverage memory copy of the fork to pass the array to
- * the child process, rather than passing arguments to it, but that could
- * be done as well.
+ * We leverage memory copy of the fork to pass the array to
+ * the child process.
  */
 void spawn_worker(char * array, int len) {
 	pid_t child_pid = fork();
