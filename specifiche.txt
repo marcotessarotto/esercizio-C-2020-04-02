@@ -13,9 +13,9 @@ Dopo aver lanciato il processo figlio, il processo principale azzera char_array 
 
 
 *analisi svolte dai processi figlio (sull'array di 80 caratteri ricevuto)*
-carattere minimo
-carattere massimo
-carattere con più occorrenze
-carattere con meno occorrenze
+carattere minimo (mostrare il primo minimo)
+carattere massimo (mostrare il primo massimo)
+carattere con più occorrenze (il primo, a parità di occorrenze)
+carattere con meno occorrenze (il primo, a parità di occorrenze)
 
 fatta l'analisi e scritto i risultati , il processo figlio termina.
