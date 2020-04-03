@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <string.h>
 
-#define NUM_CHARS 8
+#define NUM_CHARS 80
 
 char Max(char *char_array, int size);
 char Min(char *char_array, int size);
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     int i = 0;
     int child_counter = 0;
 
-    char_array = calloc(NUM_CHARS, sizeof (char));
+    char_array = calloc(NUM_CHARS, sizeof(char));
     if (char_array == NULL) {
         perror("calloc error!");
         exit(EXIT_FAILURE);
