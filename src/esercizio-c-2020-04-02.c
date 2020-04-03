@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define NUM_CHARS 10
+#define NUM_CHARS 80
 /**
  * The CPU intensive solution has a n^2 loop hence ~ O(n^2)
  * The MEMORY intensive solution has 2*n loop hence ~ O(n)
@@ -50,9 +50,9 @@ int main(int argc, char **argv) {
 
 		// Accumulate char
 		// we skip \n character only due to confusion while testing from console
-		if (last_char != '\n') {
+		// if (last_char != '\n') {
 			char_array[char_array_size++] = last_char;
-		}
+		// }
 	}
 
 	printf("Created %d children", p_count);
@@ -66,14 +66,17 @@ int main(int argc, char **argv) {
 void spawn_worker(char * array, int len) {
 	pid_t child_pid = fork();
 	if (child_pid == 0) {
+		// Child process
 		exit(worker_analysis(array, len));
 	} else if (child_pid > 0) {
+		// Parent porcess
 		printf("Child started\n");
 		if (wait(NULL) == -1) {
 			perror("wait()");
 		}
 		printf("Child finished\n");
 	} else {
+		// Fail
 		perror("fork()");
 		exit(-1);
 	}
