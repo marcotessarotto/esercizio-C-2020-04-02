@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <string.h>
 
-#define NUM_CHARS 80
+#define NUM_CHARS 10
 
 char Max(char *char_array, int size);
 char Min(char *char_array, int size);
@@ -31,17 +31,22 @@ int main(int argc, char** argv) {
         if (i == NUM_CHARS) {
             switch (fork()) {
                 case 0:// Processo figlio
-                    child_counter++;
+                	printf("\nProcesso figlio %d",child_counter);
+                    printf("\nLetto: ");
+
+                    for(int k=0;k<NUM_CHARS;k++){
+                    	printf("%c",char_array[k]);
+                    }
                     max = Max(char_array, NUM_CHARS);
-					printf("\nProcesso figlio %d\n",child_counter);
-                    printf("Il Carattere  Massimo è: (%c) codice (%d)\n", max, max);
+
+                    printf("\nIl Carattere  Massimo è: (%c) codice (%d)", max, max);
                     min = Min(char_array, NUM_CHARS);
-                    printf("Il Carattere  Minimo è: (%c) codice (%d)\n", min, min);
-                    most=mostFrequent(char_array,NUM_CHARS);
-                    printf("Il Carattere  più frequente è: (%c) codice (%d)\n", most , most);
-                    less=lessFrequent(char_array,NUM_CHARS);
-                    printf("Il Carattere  meno frequente è: (%c) codice (%d)\n", less , less);
-                    printf("---------------------------------\n");
+                    printf("\nIl Carattere  Minimo è: (%c) codice (%d)\n", min, min);
+                    most = mostFrequent(char_array,NUM_CHARS);
+                    printf("\nIl Carattere  più frequente è: (%c) codice (%d)\n", most , most);
+                    less = lessFrequent(char_array,NUM_CHARS);
+                    printf("\nIl Carattere  meno frequente è: (%c) codice (%d)\n", less , less);
+                    printf("\n---------------------------------\n");
                     exit(0);
                     break;
                 case -1:
@@ -55,14 +60,13 @@ int main(int argc, char** argv) {
                     } else {
                         memset(char_array, 0, NUM_CHARS * sizeof (char));
                         i = 0;
+                        char_array[i++] = c;
                     }
                     break;
             }
-        }else{
-			if(c > 31 && c < 127){
-				char_array[i] = c;
-				i++;
-			}
+        }else if(c!='\n'){
+			char_array[i] = c;
+			i++;
         }
     }
     printf("Sono stati lanciati %d processi figli", child_counter);
@@ -124,7 +128,7 @@ char lessFrequent(char *arr, int size){
 	bubble_sort(arr,size);
 
     // find the max frequency using linear traversal
-    int min_count = 100;
+    int min_count = size;
     char res = arr[0];
     int curr_count = 1;
 
