@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <string.h>
 
-#define NUM_CHARS 10
+#define NUM_CHARS 80
 
 void print_input (unsigned char * array, unsigned int dim);
 void process_input (unsigned char * array, unsigned int dim);
