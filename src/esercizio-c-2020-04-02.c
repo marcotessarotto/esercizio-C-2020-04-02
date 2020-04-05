@@ -81,7 +81,6 @@ int main(int argc, char *argv[]) {
 unsigned char get_lowest_char(char * char_array){
 	unsigned char lowest_char = 255;
 	for ( int i = 0 ; i < NUM_CHARS ; i++){
-		// determinates lowest char
 		if (char_array[i] < lowest_char){
 			lowest_char = char_array[i];
 		}
@@ -155,8 +154,6 @@ unsigned char get_most_unusual_char(char * char_array){
 			if (repetitions < repetition_of_the_most_unusual_char){
 				repetition_of_the_most_unusual_char = repetitions;
 				most_unusual_char = char_array[i];
-				//printf("most_unusual_char: %c\n",most_unusual_char);
-				//printf("repetition_of_the_most_unusual_char: %hi\n",repetition_of_the_most_unusual_char);
 			}
 		}
 	}
