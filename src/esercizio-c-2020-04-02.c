@@ -4,7 +4,7 @@
 #include <string.h>
 #include <sys/wait.h>
 
-#define NUM_CHARS  8
+#define NUM_CHARS  80
 
 unsigned char get_lowest_char(char * char_array);
 unsigned char get_higher_char(char * char_array);
