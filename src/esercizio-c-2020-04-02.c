@@ -7,29 +7,6 @@
 
 // specifiche:
 // https://github.com/marcotessarotto/esercizio-C-2020-04-02/blob/master/specifiche.txt
-/*
-il programma svolge le attività sotto descritte fino a quando incontra EOF su stdin.
-
-1: il programma legge caratteri da stdin.
-Quando incontra EOF, il programma scrive quanti processi figli ha lanciato in tutto e poi termina.
-
-Il programma accumula i caratteri letti da stdin in un array di dimensione 80 chiamato char_array.
-(introdurre nel codice un #define NUM_CHARS 80).
-
-Quando char_array è pieno, passa tutto l'array ad un nuovo processo figlio
-che fa delle analisi che scrive su stdout (analisi sotto riportate).
-
-Dopo aver lanciato il processo figlio, il processo principale azzera char_array ed il programma continua da 1:
-
-
-*analisi svolte dai processi figlio (sull'array di 80 caratteri ricevuto)*
-carattere minimo (mostrare il primo minimo, si applica a chi risolve dal 3/4)
-carattere massimo (mostrare il primo massimo, si applica a chi risolve dal 3/4)
-carattere con più occorrenze (il primo, a parità di occorrenze, si applica a chi risolve dal 3/4)
-carattere con meno occorrenze (il primo, a parità di occorrenze, si applica a chi risolve dal 3/4)
-
-fatta l'analisi e scritto i risultati , il processo figlio termina.
- */
 
 #define NUM_CHARS 80
 
