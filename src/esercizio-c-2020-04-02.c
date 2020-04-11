@@ -5,7 +5,8 @@
 #include <string.h>
 
 
-
+// specifiche:
+// https://github.com/marcotessarotto/esercizio-C-2020-04-02/blob/master/specifiche.txt
 /*
 il programma svolge le attività sotto descritte fino a quando incontra EOF su stdin.
 
@@ -98,15 +99,7 @@ void fork_me() {
 }
 
 void perform_analysis() {
-/*
-*analisi svolte dai processi figlio (sull'array di 80 caratteri ricevuto)*
-carattere minimo (mostrare il primo minimo, si applica a chi risolve dal 3/4)
-carattere massimo (mostrare il primo massimo, si applica a chi risolve dal 3/4)
-carattere con più occorrenze (il primo, a parità di occorrenze, si applica a chi risolve dal 3/4)
-carattere con meno occorrenze (il primo, a parità di occorrenze, si applica a chi risolve dal 3/4)
 
-fatta l'analisi e scritto i risultati , il processo figlio termina.
- */
 	int min_char = 256;
 	int max_char = -1;
 	int ch;
@@ -120,7 +113,8 @@ fatta l'analisi e scritto i risultati , il processo figlio termina.
 
 	for (int i = 0; i < NUM_CHARS; i++) {
 
-		ch = (int)char_array[i] & 0xFF; // carattere che sto esaminando
+		// ch è il carattere che sto esaminando
+		ch = (int)char_array[i] & 0xFF; // rendo positivo il carattere (char è 'signed' in gcc)
 
 		if (ch < min_char) {
 			min_char = ch; // nuovo carattere minimo
