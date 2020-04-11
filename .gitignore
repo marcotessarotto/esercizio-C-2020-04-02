@@ -54,3 +54,6 @@ dkms.conf
 .settings/language.settings.xml
 .settings/
 **/.settings/**
+
+src/.gitignore
+
