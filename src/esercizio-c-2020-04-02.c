@@ -1,1 +1,172 @@
 //
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+
+
+/*
+il programma svolge le attività sotto descritte fino a quando incontra EOF su stdin.
+
+1: il programma legge caratteri da stdin.
+Quando incontra EOF, il programma scrive quanti processi figli ha lanciato in tutto e poi termina.
+
+Il programma accumula i caratteri letti da stdin in un array di dimensione 80 chiamato char_array.
+(introdurre nel codice un #define NUM_CHARS 80).
+
+Quando char_array è pieno, passa tutto l'array ad un nuovo processo figlio
+che fa delle analisi che scrive su stdout (analisi sotto riportate).
+
+Dopo aver lanciato il processo figlio, il processo principale azzera char_array ed il programma continua da 1:
+
+
+*analisi svolte dai processi figlio (sull'array di 80 caratteri ricevuto)*
+carattere minimo (mostrare il primo minimo, si applica a chi risolve dal 3/4)
+carattere massimo (mostrare il primo massimo, si applica a chi risolve dal 3/4)
+carattere con più occorrenze (il primo, a parità di occorrenze, si applica a chi risolve dal 3/4)
+carattere con meno occorrenze (il primo, a parità di occorrenze, si applica a chi risolve dal 3/4)
+
+fatta l'analisi e scritto i risultati , il processo figlio termina.
+ */
+
+#define NUM_CHARS 80
+
+char char_array[NUM_CHARS];
+
+void fork_me();
+void perform_analysis();
+
+int main(int argc, char *argv[]) {
+
+	int child_process_counter = 0;
+	int ch;
+
+	char * ptr;
+	char * end_of_array;
+
+	end_of_array = &char_array[NUM_CHARS-1];
+
+	ptr = char_array; // equivalente a: ptr = &char_array[0];
+	// per chi ha dubbi sui puntatori, vedere questo esempio:
+	// https://repl.it/@MarcoTessarotto/esempio-calloc-realloc-free
+
+	while ((ch = getchar()) != EOF) {
+		*ptr = ch;
+
+		if (ptr == end_of_array) {
+			fork_me();
+
+#ifdef DEBUG
+			sleep(1);
+#endif
+
+			child_process_counter++;
+
+			ptr = char_array;
+
+			memset(char_array, 0, NUM_CHARS * sizeof(char));
+		} else {
+		    ptr++;
+		}
+
+
+	}
+
+	printf("ho eseguito %d processi figli.\nbye!\n", child_process_counter);
+
+	return 0;
+}
+
+void fork_me() {
+
+	switch (fork()) {
+		case 0: // processo figlio
+			perform_analysis();
+			break;
+		case -1: // errore!
+			perror("fork()");
+
+			exit(EXIT_FAILURE);
+
+			break;
+		default:
+			//
+			break;
+	}
+
+}
+
+void perform_analysis() {
+/*
+*analisi svolte dai processi figlio (sull'array di 80 caratteri ricevuto)*
+carattere minimo (mostrare il primo minimo, si applica a chi risolve dal 3/4)
+carattere massimo (mostrare il primo massimo, si applica a chi risolve dal 3/4)
+carattere con più occorrenze (il primo, a parità di occorrenze, si applica a chi risolve dal 3/4)
+carattere con meno occorrenze (il primo, a parità di occorrenze, si applica a chi risolve dal 3/4)
+
+fatta l'analisi e scritto i risultati , il processo figlio termina.
+ */
+	int min_char = 256;
+	int max_char = -1;
+	int ch;
+
+	char most_frequent_char;
+	char less_frequent_char;
+	int most_frequent_char_frequency = -1;
+	int less_frequent_char_frequency = 81;
+
+	char char_frequency[256] = { 0 };
+
+	for (int i = 0; i < NUM_CHARS; i++) {
+
+		ch = (int)char_array[i] & 0xFF; // carattere che sto esaminando
+
+		if (ch < min_char) {
+			min_char = ch; // nuovo carattere minimo
+		}
+
+		if (ch > max_char) {
+			max_char = ch; // nuovo carattere massimo
+		}
+
+		char_frequency[ch]++; // incremento la frequenza del carattere ch
+
+//		if (char_frequency[ch] > most_frequent_char_frequency) {
+//			most_frequent_char_frequency = char_frequency[ch];
+//			most_frequent_char = ch;
+//		}
+	}
+
+	for (int i = 0; i < 256; i++) {
+		if (char_frequency[i] > most_frequent_char_frequency) {
+			most_frequent_char_frequency = char_frequency[i];
+			most_frequent_char = i;
+		}
+
+		if (char_frequency[i] < less_frequent_char_frequency) {
+			less_frequent_char_frequency = char_frequency[i];
+			less_frequent_char = i;
+		}
+	}
+
+	printf("\nchild process %u\n", getpid());
+
+#ifdef DEBUG
+	for (int i = 0; i < 256; i++) {
+		printf("f[%d]=%d ", i, char_frequency[i]);
+		if ((i+1) % 16 == 0)
+			printf("\n");
+	}
+	printf("\n");
+#endif
+
+	printf("carattere minimo: %u\n",min_char);
+	printf("carattere massimo: %u\n",max_char);
+	printf("carattere con più occorrenze: %u freq=%d\n",most_frequent_char, most_frequent_char_frequency);
+	printf("carattere con meno occorrenze: %u freq=%d\n",less_frequent_char, less_frequent_char_frequency);
+
+	exit(EXIT_SUCCESS);
+}
+
+
